@@ -83,6 +83,7 @@ public class GraphiteHttpClient {
     private final int graphiteConnectionRequestTimeout;
     private final int graphiteConnectTimeout;
     private final int graphiteSocketTimeout;
+    private final int graphiteRefresh;
     private final HttpClient client;
     private final HttpContext context;
     
@@ -99,6 +100,7 @@ public class GraphiteHttpClient {
         this.graphiteConnectionRequestTimeout = seyrenConfig.getGraphiteConnectionRequestTimeout();
         this.graphiteConnectTimeout = seyrenConfig.getGraphiteConnectTimeout();
         this.graphiteSocketTimeout = seyrenConfig.getGraphiteSocketTimeout();
+        this.graphiteRefresh = seyrenConfig.getGraphiteRefresh();
         this.context = new BasicHttpContext();
         this.client = createHttpClient();
     }
@@ -112,21 +114,20 @@ public class GraphiteHttpClient {
     }
 
     public JsonNode getTargetJson(String target, String from, String until) throws Exception {
-        // Default values for from/until preserve hard-coded functionality
-        // seyren had before from/until were fields that could be specified.
         if (from == null) {
-            from = "-11minutes";
-        }
-        if (until == null) {
-            until = "-1minutes";
+            //Sync from with refreshRate
+            from = "-" + graphiteRefresh/1000 + "s";
         }
         URI baseUri = new URI(graphiteScheme, graphiteHost, graphitePath + "/render/", null, null);
-        URI uri = new URIBuilder(baseUri)
+        URIBuilder uriBuilder = new URIBuilder(baseUri)
                 .addParameter("from", from)
-                .addParameter("until", until)
                 .addParameter("uniq", String.valueOf(new DateTime().getMillis()))
                 .addParameter("format", "json")
-                .addParameter("target", target).build();
+                .addParameter("target", target);
+        if (until != null) {
+            uriBuilder.addParameter("until", until);
+        }
+        URI uri = uriBuilder.build();
 
         HttpGet get = new HttpGet(uri);
         

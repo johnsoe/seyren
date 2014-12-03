@@ -38,6 +38,7 @@ public class SeyrenConfig {
     private final String mongoUrl;
     private final String graphsEnable;
     private final String graphiteUrl;
+    private final int graphiteRefresh;
     private final String graphiteUsername;
     private final String graphitePassword;
     private final String graphiteKeyStore;
@@ -88,6 +89,7 @@ public class SeyrenConfig {
         
         // Graphite
         this.graphiteUrl = stripEnd(configOrDefault("GRAPHITE_URL", "http://localhost:80"), "/");
+        this.graphiteRefresh = Integer.parseInt(configOrDefault("GRAPHITE_REFRESH", "60000"));
         this.graphiteUsername = configOrDefault("GRAPHITE_USERNAME", "");
         this.graphitePassword = configOrDefault("GRAPHITE_PASSWORD", "");
         this.graphiteKeyStore = configOrDefault("GRAPHITE_KEYSTORE", "");
@@ -293,6 +295,9 @@ public class SeyrenConfig {
     public String getGraphiteUrl() {
         return graphiteUrl;
     }
+
+    @JsonIgnore
+    public int getGraphiteRefresh() {return graphiteRefresh;}
     
     @JsonIgnore
     public String getGraphiteUsername() {

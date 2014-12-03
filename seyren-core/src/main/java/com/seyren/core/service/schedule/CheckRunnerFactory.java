@@ -22,7 +22,6 @@ import javax.inject.Named;
 import com.seyren.core.domain.Check;
 import com.seyren.core.service.checker.NoopTargetCheck;
 import com.seyren.core.service.checker.TargetChecker;
-import com.seyren.core.service.checker.ValueChecker;
 import com.seyren.core.service.notification.NotificationService;
 import com.seyren.core.store.AlertsStore;
 import com.seyren.core.store.ChecksStore;
@@ -33,25 +32,23 @@ public class CheckRunnerFactory {
     private final AlertsStore alertsStore;
     private final ChecksStore checksStore;
     private final TargetChecker targetChecker;
-    private final ValueChecker valueChecker;
     private final Iterable<NotificationService> notificationServices;
     
     @Inject
-    public CheckRunnerFactory(AlertsStore alertsStore, ChecksStore checksStore, TargetChecker targetChecker, ValueChecker valueChecker,
+    public CheckRunnerFactory(AlertsStore alertsStore, ChecksStore checksStore, TargetChecker targetChecker,
             List<NotificationService> notificationServices) {
         this.alertsStore = alertsStore;
         this.checksStore = checksStore;
         this.targetChecker = targetChecker;
-        this.valueChecker = valueChecker;
         this.notificationServices = notificationServices;
     }
 
     public CheckRunner create(Check check) {
-        return new CheckRunner(check, alertsStore, checksStore, targetChecker, valueChecker, notificationServices);
+        return new CheckRunner(check, alertsStore, checksStore, targetChecker, notificationServices);
     }
 
     public CheckRunner create(Check check, BigDecimal value) {
-        return new CheckRunner(check, alertsStore, checksStore, new NoopTargetCheck(value), valueChecker, notificationServices);
+        return new CheckRunner(check, alertsStore, checksStore, new NoopTargetCheck(value), notificationServices);
     }
 
 }

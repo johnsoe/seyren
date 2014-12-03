@@ -16,6 +16,7 @@ package com.seyren.core.service.checker;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -82,5 +83,38 @@ public class GraphiteTargetChecker implements TargetChecker {
         LOGGER.warn("{}", node);
         throw new InvalidGraphiteValueException("Could not find a valid datapoint for target: " + node.get("target"));
     }
-    
+
+    /**
+     * Loop through the datapoints and find the worst value relative to alerts and thresholds available
+     */
+    private BigDecimal getWorstValue(JsonNode node, Check check) throws Exception {
+        JsonNode datapoints = node.get("datapoints");
+        boolean isHigherWorse = ValueChecker.isTheValueBeingHighWorse(check.getWarn(), check.getError());
+        BigDecimal worst = null;
+
+        for (int i = 0; i < datapoints.size(); i++) {
+            String value = datapoints.get(i).get(0).asText();
+            if(!value.equals("null")) {
+                if(worst == null) {
+                    worst = new BigDecimal(value);
+                } else {
+                    worst = compareWorstValue(new BigDecimal(value), worst, isHigherWorse);
+                }
+            }
+        }
+
+        if(worst == null) {
+            LOGGER.warn("{}", node);
+            throw new InvalidGraphiteValueException("Could not find a valid datapoint for target: " + node.get("target"));
+        } else {
+            return worst;
+        }
+    }
+
+    private BigDecimal compareWorstValue(BigDecimal prevWorst, BigDecimal alternate, boolean isHigherWorse) {
+        if(isHigherWorse) {
+            return prevWorst.max(alternate);
+        }
+        return prevWorst.min(alternate);
+    }
 }

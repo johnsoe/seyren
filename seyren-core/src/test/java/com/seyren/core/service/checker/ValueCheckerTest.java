@@ -23,63 +23,56 @@ import org.junit.Test;
 
 import com.seyren.core.domain.AlertType;
 
-public class DefaultValueCheckerTest {
-    
-    private ValueChecker checker;
-    
-    @Before
-    public void before() {
-        checker = new DefaultValueChecker();
-    }
-    
+public class ValueCheckerTest {
+
     @Test
     public void alertHasOkStateForBadHighValueWhenValueIsLessThanWarn() {
-        assertThat(checker.checkValue(bd("0.10"), bd("0.15"), bd("0.20")), is(AlertType.OK));
+        assertThat(ValueChecker.checkValue(bd("0.10"), bd("0.15"), bd("0.20")), is(AlertType.OK));
     }
     
     @Test
     public void alertHasWarnStateForBadHighValueWhenValueIsEqualToWarn() {
-        assertThat(checker.checkValue(bd("0.15"), bd("0.15"), bd("0.20")), is(AlertType.WARN));
+        assertThat(ValueChecker.checkValue(bd("0.15"), bd("0.15"), bd("0.20")), is(AlertType.WARN));
     }
     
     @Test
     public void alertHasWarnStateForBadHighValueWhenValueIsGreaterToWarnButLessThanError() {
-        assertThat(checker.checkValue(bd("0.16"), bd("0.15"), bd("0.20")), is(AlertType.WARN));
+        assertThat(ValueChecker.checkValue(bd("0.16"), bd("0.15"), bd("0.20")), is(AlertType.WARN));
     }
     
     @Test
     public void alertHasErrorStateForBadHighValueWhenValueIsEqualToError() {
-        assertThat(checker.checkValue(bd("0.20"), bd("0.15"), bd("0.20")), is(AlertType.ERROR));
+        assertThat(ValueChecker.checkValue(bd("0.20"), bd("0.15"), bd("0.20")), is(AlertType.ERROR));
     }
     
     @Test
     public void alertHasErrorStateForBadHighValueWhenValueIsGreaterThanError() {
-        assertThat(checker.checkValue(bd("0.21"), bd("0.15"), bd("0.20")), is(AlertType.ERROR));
+        assertThat(ValueChecker.checkValue(bd("0.21"), bd("0.15"), bd("0.20")), is(AlertType.ERROR));
     }
     
     @Test
     public void alertHasOkStateForBadLowValueWhenValueIsGreaterThanWarn() {
-        assertThat(checker.checkValue(bd("0.21"), bd("0.20"), bd("0.15")), is(AlertType.OK));
+        assertThat(ValueChecker.checkValue(bd("0.21"), bd("0.20"), bd("0.15")), is(AlertType.OK));
     }
     
     @Test
     public void alertHasWarnStateForBadLowValueWhenValueIsEqualToWarn() {
-        assertThat(checker.checkValue(bd("0.20"), bd("0.20"), bd("0.15")), is(AlertType.WARN));
+        assertThat(ValueChecker.checkValue(bd("0.20"), bd("0.20"), bd("0.15")), is(AlertType.WARN));
     }
     
     @Test
     public void alertHasWarnStateForBadLowValueWhenValueIsLessThanWarnButGreaterThanError() {
-        assertThat(checker.checkValue(bd("0.19"), bd("0.20"), bd("0.15")), is(AlertType.WARN));
+        assertThat(ValueChecker.checkValue(bd("0.19"), bd("0.20"), bd("0.15")), is(AlertType.WARN));
     }
     
     @Test
     public void alertHasErrorStateForBadLowValueWhenValueIsEqualToError() {
-        assertThat(checker.checkValue(bd("0.15"), bd("0.20"), bd("0.15")), is(AlertType.ERROR));
+        assertThat(ValueChecker.checkValue(bd("0.15"), bd("0.20"), bd("0.15")), is(AlertType.ERROR));
     }
     
     @Test
     public void alertHasErrorStateForBadLowValueWhenValueIsLessThanError() {
-        assertThat(checker.checkValue(bd("0.14"), bd("0.20"), bd("0.15")), is(AlertType.ERROR));
+        assertThat(ValueChecker.checkValue(bd("0.14"), bd("0.20"), bd("0.15")), is(AlertType.ERROR));
     }
     
     private BigDecimal bd(String value) {

@@ -61,8 +61,7 @@ public class GraphiteHttpClientTest {
 
         clientDriver.addExpectation(
                 onRequestTo("/render/")
-                        .withParam("from", "-11minutes")
-                        .withParam("until", "-1minutes")
+                        .withParam("from", "-60s")
                         .withParam("uniq", Pattern.compile("[0-9]+"))
                         .withParam("format", "json")
                         .withParam("target", "service.error.1MinuteRate"),
@@ -109,8 +108,7 @@ public class GraphiteHttpClientTest {
         
         clientDriver.addExpectation(
                 onRequestTo("/render/")
-                        .withParam("from", "-11minutes")
-                        .withParam("until", "-1minutes")
+                        .withParam("from", "-60s")
                         .withParam("uniq", Pattern.compile("[0-9]+"))
                         .withParam("format", "json")
                         .withParam("target", "service.error.1MinuteRate")

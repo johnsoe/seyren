@@ -42,16 +42,14 @@ public class CheckRunner implements Runnable {
     private final AlertsStore alertsStore;
     private final ChecksStore checksStore;
     private final TargetChecker targetChecker;
-    private final ValueChecker valueChecker;
     private final Iterable<NotificationService> notificationServices;
     
-    public CheckRunner(Check check, AlertsStore alertsStore, ChecksStore checksStore, TargetChecker targetChecker, ValueChecker valueChecker,
+    public CheckRunner(Check check, AlertsStore alertsStore, ChecksStore checksStore, TargetChecker targetChecker,
             Iterable<NotificationService> notificationServices) {
         this.check = check;
         this.alertsStore = alertsStore;
         this.checksStore = checksStore;
         this.targetChecker = targetChecker;
-        this.valueChecker = valueChecker;
         this.notificationServices = notificationServices;
     }
     
@@ -98,7 +96,7 @@ public class CheckRunner implements Runnable {
                     lastState = lastAlert.getToType();
                 }
                 
-                AlertType currentState = valueChecker.checkValue(currentValue, warn, error);
+                AlertType currentState = ValueChecker.checkValue(currentValue, warn, error);
                 
                 if (currentState.isWorseThan(worstState)) {
                     worstState = currentState;

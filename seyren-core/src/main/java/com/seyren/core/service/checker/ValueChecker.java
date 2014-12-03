@@ -15,10 +15,36 @@ package com.seyren.core.service.checker;
 
 import java.math.BigDecimal;
 
+import javax.inject.Named;
+
 import com.seyren.core.domain.AlertType;
 
-public interface ValueChecker {
+@Named
+public class ValueChecker{
+
+    public static AlertType checkValue(BigDecimal value, BigDecimal warn, BigDecimal error) {
+        
+        boolean isHighValueWorse = isTheValueBeingHighWorse(warn, error);
+        
+        if (isBeyondThreshold(value, error, isHighValueWorse)) {
+            return AlertType.ERROR;
+        } else if (isBeyondThreshold(value, warn, isHighValueWorse)) {
+            return AlertType.WARN;
+        }
+        
+        return AlertType.OK;
+        
+    }
     
-    AlertType checkValue(BigDecimal value, BigDecimal warn, BigDecimal error);
+    private static boolean isBeyondThreshold(BigDecimal value, BigDecimal threshold, boolean isHighValueWorse) {
+        if (isHighValueWorse) {
+            return value.compareTo(threshold) >= 0;
+        }
+        return value.compareTo(threshold) <= 0;
+    }
+    
+    public static boolean isTheValueBeingHighWorse(BigDecimal warn, BigDecimal error) {
+        return warn.compareTo(error) <= 0;
+    }
     
 }
