@@ -13,23 +13,20 @@
  */
 package com.seyren.core.service.checker;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Queue;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Optional;
 import com.seyren.core.domain.Check;
 import com.seyren.core.exception.InvalidGraphiteValueException;
 import com.seyren.core.util.graphite.GraphiteHttpClient;
 import com.seyren.core.util.graphite.GraphiteReadException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 @Named
 public class GraphiteTargetChecker implements TargetChecker {
@@ -46,13 +43,14 @@ public class GraphiteTargetChecker implements TargetChecker {
     @Override
     public Map<String, Optional<BigDecimal>> check(Check check) throws Exception {
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();
-        
+        boolean isHigherWorse = ValueChecker.isTheValueBeingHighWorse(check.getWarn(), check.getError());
+
         try {
             JsonNode node = graphiteHttpClient.getTargetJson(check.getTarget(), check.getFrom(), check.getUntil());
             for (JsonNode metric : node) {
                 String target = metric.path("target").asText();
                 try {
-                    BigDecimal value = getLatestValue(metric);
+                    BigDecimal value = getWorstValue(metric, isHigherWorse);
                     targetValues.put(target, Optional.of(value));
                 } catch (InvalidGraphiteValueException e) {
                     // Silence these - we don't know what's causing Graphite to return null values
@@ -87,9 +85,8 @@ public class GraphiteTargetChecker implements TargetChecker {
     /**
      * Loop through the datapoints and find the worst value relative to alerts and thresholds available
      */
-    private BigDecimal getWorstValue(JsonNode node, Check check) throws Exception {
+    private BigDecimal getWorstValue(JsonNode node, Boolean isHigherWorse) throws Exception {
         JsonNode datapoints = node.get("datapoints");
-        boolean isHigherWorse = ValueChecker.isTheValueBeingHighWorse(check.getWarn(), check.getError());
         BigDecimal worst = null;
 
         for (int i = 0; i < datapoints.size(); i++) {

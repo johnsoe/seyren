@@ -115,7 +115,7 @@ public class GraphiteHttpClient {
 
     public JsonNode getTargetJson(String target, String from, String until) throws Exception {
         if (from == null) {
-            //Sync from with refreshRate
+            //From defaults into graphiteRefresh rate.
             from = "-" + graphiteRefresh/1000 + "s";
         }
         URI baseUri = new URI(graphiteScheme, graphiteHost, graphitePath + "/render/", null, null);

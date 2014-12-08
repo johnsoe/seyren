@@ -35,6 +35,7 @@ public class SeyrenConfig {
     private static final String DEFAULT_BASE_URL = "http://localhost:8080/seyren";
 
     private final String baseUrl;
+    private final String publicUrl;
     private final String mongoUrl;
     private final String graphsEnable;
     private final String graphiteUrl;
@@ -84,6 +85,7 @@ public class SeyrenConfig {
         
         // Base
         this.baseUrl = stripEnd(configOrDefault("SEYREN_URL", DEFAULT_BASE_URL), "/");
+        this.publicUrl = stripEnd(configOrDefault("PUBLIC_SEYREN_URL", this.baseUrl), "/");
         this.mongoUrl = configOrDefault("MONGO_URL", "mongodb://localhost:27017/seyren");
         this.graphsEnable = configOrDefault("GRAPHS_ENABLE", "true");
         
@@ -161,6 +163,9 @@ public class SeyrenConfig {
     public String getBaseUrl() {
         return baseUrl;
     }
+
+    @JsonIgnore
+    public String getPublicUrl() {return publicUrl; }
 
     @JsonIgnore
     public boolean isBaseUrlSetToDefault() {

@@ -49,6 +49,7 @@ The following options can be supplied as system properties or environment variab
 ##### Base
 * `MONGO_URL` - The Mongo [connection string](http://docs.mongodb.org/manual/reference/connection-string/). Default: `mongodb://localhost:27017/seyren`
 * `SEYREN_URL` - The location of your Seyren instance. Default: `http://localhost:8080/seyren`
+* `PUBLIC_SEYREN_URL` - The location of your Seyren instance from an external view. Default: `SEYREN_URL`
 * `SEYREN_LOG_PATH` - The path of seyren.log. Default: ``. If a value is set, it must end with a '/'.
 * `GRAPHS_ENABLE` - Show(true) or hide(false) graphs in check page. Default: `true`.
 

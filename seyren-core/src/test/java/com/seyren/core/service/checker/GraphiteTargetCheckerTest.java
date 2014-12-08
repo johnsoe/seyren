@@ -78,14 +78,14 @@ public class GraphiteTargetCheckerTest {
     }
     
     @Test
-    public void valueIsDeterminedByGoingThroughDatapointsInReverserOrder() throws Exception {
+    public void valueIsDeterminedByGoingThroughDatapointsAndFindingWorst() throws Exception {
         JsonNode node = MAPPER.readTree("[{\"target\": \"service.error.1MinuteRate\", \"datapoints\": [[0.20, 1337453460],[0.01, 1337453463]]}]");
         
         when(mockGraphiteHttpClient.getTargetJson("service.error.1MinuteRate", null, null)).thenReturn(node);
         
         Map<String, Optional<BigDecimal>> values = checker.check(check());
         
-        assertThat(values.get("service.error.1MinuteRate").get(), is(new BigDecimal("0.01")));
+        assertThat(values.get("service.error.1MinuteRate").get(), is(new BigDecimal("0.2")));
     }
     
     @Test
@@ -122,7 +122,7 @@ public class GraphiteTargetCheckerTest {
         Map<String, Optional<BigDecimal>> values = checker.check(checkWithTarget("service.*.1MinuteRate"));
         
         assertThat(values.entrySet(), hasSize(2));
-        assertThat(values.get("service.error.1MinuteRate").get(), is(new BigDecimal("0.01")));
+        assertThat(values.get("service.error.1MinuteRate").get(), is(new BigDecimal("0.2")));
         assertThat(values.get("service.warn.1MinuteRate").get(), is(new BigDecimal("0.78")));
     }
     

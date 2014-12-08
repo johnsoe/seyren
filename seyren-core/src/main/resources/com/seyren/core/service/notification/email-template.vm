@@ -12,7 +12,7 @@
 		</style>
 	</head>
 	<body>
-		<h3><a href="$SEYREN_URL/#/checks/$CHECK.Id">$CHECK.Name</a></h3>
+		<h3><a href="$PUBLIC_SEYREN_URL/#/checks/$CHECK.Id">$CHECK.Name</a></h3>
 #if ("$!CHECK.Description" != "")
         <p>$CHECK.Description</p>
 #end

@@ -35,6 +35,7 @@ public class SeyrenConfigTest {
     public void defaultBaseUrlIsCorrect() {
         if (config.isBaseUrlSetToDefault()) {
             assertThat(config.getBaseUrl(), is("http://localhost:8080/seyren"));
+            assertThat(config.getPublicUrl(), is("http://localhost:8080/seyren"));
         }
     }
     

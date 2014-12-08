@@ -70,7 +70,7 @@ public class VelocityEmailHelper implements EmailHelper {
         VelocityContext result = new VelocityContext();
         result.put("CHECK", check);
         result.put("ALERTS", alerts);
-        result.put("SEYREN_URL", seyrenConfig.getBaseUrl());
+        result.put("PUBLIC_SEYREN_URL", seyrenConfig.getPublicUrl());
         return result;
     }
     
